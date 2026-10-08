@@ -1,0 +1,128 @@
+{% extends 'posts/base.html' %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 mb-3">
+        <article class="card-modern mb-4 fade-in-up">
+            {% if post.imagen %}
+                <img src="{{ post.imagen.url }}" class="card-img-top" style="max-height: 400px; object-fit: cover; border-radius: 12px 12px 0 0;">
+            {% endif %}
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h1 class="display-6 fw-bold">{{ post.titulo }}</h1>
+                    {% if post.categoria %}
+                        <span class="badge-category">{{ post.categoria.nombre }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="text-muted small mb-4">
+                        <a href="{% url 'perfil_publico' post.autor %}"><i class="fas fa-user"></i> {{ post.autor }}</a>
+                    <i class="fas fa-calendar-alt ms-2"></i> {{ post.fecha_publicacion|date:"d/m/Y H:i" }}
+                    <button class="action-btn like-btn {% if post.user_has_liked %}liked{% endif %}" 
+                            data-post-id="{{ post.id }}"
+                            onclick="toggleLike({{ post.id }})">
+                        <i class="{% if post.user_has_liked %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                        <span class="count" id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+                    </button>
+                    <button class="action-btn save-btn {% if post.user_has_saved %}saved{% endif %}" 
+                            data-post-id="{{ post.id }}"
+                            onclick="toggleGuardado({{ post.id }})">
+                        <i class="{% if post.user_has_saved %}fas{% else %}far{% endif %} fa-bookmark"></i>
+                        <span>{% if post.user_has_saved %}Guardado{% else %}Guardar{% endif %}</span>
+                    </button>
+                    <a href="{% url 'inicio' %}" class="action-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Volver</span>
+                    </a>
+                </div>
+                
+                <div class="post-content">
+                    {{ post.contenido|linebreaks }}
+                </div>
+                
+
+                {% if user == post.autor %}
+                    <div class="mt-4 d-flex gap-2">
+                        <a href="{% url 'editar_post' post.pk %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="{% url 'eliminar_post' post.pk %}" class="btn btn-primary">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+        {% if user.is_authenticated %}
+            <form method="post" class="mt-4" id="form-comentario">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <textarea name="texto" id="comentario-input" class="form-control" rows="3" placeholder="Escribe tu comentario..."></textarea>
+                </div>
+                <button type="submit" id="btn-enviar-comentario" class="btn btn-primary-modern btn-modern">
+                    <i class="fas fa-paper-plane"></i> Comentar
+                </button>
+            </form>
+        {% else %}
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> 
+                <a href="{% url 'login' %}" class="text-decoration-none">Inicia sesión</a> o 
+                <a href="{% url 'registro' %}" class="text-decoration-none">regístrate</a> para comentar.
+            </div>
+        {% endif %}
+<!-- SECCIÓN DE COMENTARIOS -->
+<div class="card-modern mt-4 fade-in-up" style="animation-delay: 200ms;">
+    <div class="card-body">
+        <h4 class="fw-bold">
+            <i class="fas fa-comments"></i> Comentarios 
+            (<small id="contador-comentarios" class="">{{ comentarios|length }}</small>)
+        </h4>
+
+        <!-- CONTENEDOR DE COMENTARIOS EXISTENTES -->
+        <div id="comentarios-container" class="comentarios-lista">
+            {% for comentario in comentarios %}
+                <div class="comment-item">
+                    <div class="d-flex gap-2">
+                        <!-- Avatar clickeable -->
+                        <div class="comment-avatar">
+                            <a href="{% url 'perfil_publico' comentario.autor.username %}" 
+                            class="comment-avatar-link">
+                                {% if comentario.autor.perfil.avatar %}
+                                    <img src="{{ comentario.autor.perfil.avatar.url }}" alt="{{ comentario.autor.username }}">
+                                {% else %}
+                                    <i class="fas fa-user"></i>
+                                {% endif %}
+                            </a>
+                        </div>
+                        
+                        <!-- Contenido -->
+                        <div class="comment-body">
+                            <div class="d-flex justify-content-between">
+                                <strong>
+                                    <a href="{% url 'perfil_publico' comentario.autor.username %}" 
+                                    class="comment-author-link">
+                                        {{ comentario.autor }}
+                                    </a>
+                                </strong>
+                                <small class="text-muted">{{ comentario.fecha|date:"d/m/Y H:i" }}</small>
+                            </div>
+                            <p class="mb-0 mt-1">{{ comentario.texto }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="text-center py-3 text-muted" id="mensaje-vacio">
+                    <i class="fas fa-comment-slash fa-2x"></i>
+                    <p>No hay comentarios aún. ¡Sé el primero!</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+
+<!-- PASAR EL ID DEL POST AL JAVASCRIPT -->
+<input type="hidden" id="post-id" value="{{ post.id }}">
+
+{% endblock %}

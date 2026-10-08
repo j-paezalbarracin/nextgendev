@@ -1,0 +1,129 @@
+/* ============================================ */
+/* NOTIFICACIONES - PÁGINA COMPLETA */
+/* ============================================ */
+
+.notif-page-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.notif-page-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-color);
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+.notif-page-item:last-child {
+    border-bottom: none;
+}
+
+.notif-page-item:hover {
+    background: var(--bg-secondary);
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 8px;
+}
+
+.notif-page-item.no-leida {
+    background: #f0f7ff;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 8px;
+}
+
+.notif-avatar-wrapper {
+    flex-shrink: 0;
+}
+
+/* ============================================ */
+/* TOAST */
+/* ============================================ */
+
+.notif-toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 350px;
+}
+
+.notif-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ============================================ */
+/* MODO OSCURO */
+/* ============================================ */
+
+[data-theme="dark"] .notif-item.no-leida {
+    background: #1e3a5f;
+}
+
+[data-theme="dark"] .notif-item.no-leida:hover {
+    background: #2a4a6f;
+}
+
+[data-theme="dark"] .notif-page-item.no-leida {
+    background: #1e3a5f;
+}
+
+[data-theme="dark"] .notif-page-item.no-leida:hover {
+    background: #2a4a6f;
+}
+
+[data-theme="dark"] .notif-header {
+    border-color: #3a3a3a;
+}
+
+[data-theme="dark"] .notif-item {
+    border-color: #3a3a3a;
+}
+
+[data-theme="dark"] .notif-item:hover {
+    background: #2a2a2a;
+}
+
+[data-theme="dark"] .notif-avatar-icon {
+    background: #2a2a2a;
+}
+
+[data-theme="dark"] .notif-page-item {
+    border-color: #3a3a3a;
+}
+
+[data-theme="dark"] .notif-page-item:hover {
+    background: #2a2a2a;
+}
+
+[data-theme="dark"] .notif-toast {
+    background: var(--primary);
+}
+
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
+
+@media (max-width: 768px) {
+    .notif-toast {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        max-width: none;
+    }
+}

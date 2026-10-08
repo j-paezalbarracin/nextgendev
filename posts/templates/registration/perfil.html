@@ -1,0 +1,68 @@
+{% extends 'posts/base.html' %}
+
+{% block contenido %}
+<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="col-lg-10">
+        <div class="card-modern shadow-lg">
+            <div class="card-body">
+                <h2 class="mb-4 fw-bold"><i class="fa-solid fa-user"></i> Perfil</h2>
+                <span class="badge bg-success">Rol:
+                    {% if user.is_staff %}Administrador{% else %}Usuario{% endif %}
+                </span>
+                <form method="post" id="perfilForm">
+                    {% csrf_token %}
+                    <div class="mb-3 mt-2 fw-bold">
+                        <label for="id_username" class="form-label">Usuario</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 fw-bold">
+                        <label for="id_username" class="form-label">Primer Nombre</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="text-danger small">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 fw-bold">
+                        <label for="id_username" class="form-label">Primer Apellido</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="text-danger small">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 fw-bold">
+                        <label for="id_email" class="form-label">Email</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small">{{ form.email.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle"></i> 
+                            Usaremos este correo para comunicaciones importantes.
+                        </small>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: center;" class="btn-perfil">
+                        <button type="submit" class="btn btn-success py-2"><i class="fas fa-check"></i> Actualizar datos</button>
+                        <a href="{% url 'cambiar_contrasena' %}" class="btn btn-danger" style="text-decoration: none;">
+                            <i class="fas fa-key"></i> Cambiar contraseña
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--  Información adicional -->
+        <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    Última actualización: {{ user.last_login|date:"d/m/Y H:i" }}
+                    <span class="mx-2">|</span>
+                    Miembro desde: {{ user.date_joined|date:"d/m/Y" }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

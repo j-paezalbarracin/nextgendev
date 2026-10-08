@@ -1,0 +1,132 @@
+{% extends 'posts/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Cabecera -->
+        <div class="card-modern mb-4 fade-in-up">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="fw-bold mb-1">
+                            {% if tipo == 'seguidores' %}
+                                <i class="fas fa-users"></i> Seguidores
+                            {% else %}
+                                <i class="fas fa-user-friends"></i> Siguiendo
+                            {% endif %}
+                        </h2>
+                        <p class="text-muted mb-0">
+                            de <a href="{% url 'perfil_publico' usuario.username %}">@{{ usuario.username }}</a>
+                        </p>
+                    </div>
+                    <!-- Tabs -->
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'seguidores' usuario.username %}" 
+                        class="btn btn-sm {% if tipo == 'seguidores' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            Seguidores
+                        </a>
+                        <a href="{% url 'siguiendo' usuario.username %}" 
+                        class="btn btn-sm {% if tipo == 'siguiendo' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            Siguiendo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Lista de usuarios -->
+        <div class="card-modern fade-in-up">
+            <div class="card-body">
+                <ul class="usuarios-list">
+                    {% for u in usuarios %}
+                    <li class="usuario-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{% url 'perfil_publico' u.username %}" class="usuario-info">
+                                <div class="usuario-avatar">
+                                    {% if u.perfil.avatar %}
+                                        <img src="{{ u.perfil.avatar.url }}" alt="{{ u.username }}">
+                                    {% else %}
+                                        <i class="fas fa-user"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="usuario-data">
+                                    <span class="usuario-nombre">
+                                        {% if u.first_name or u.last_name %}
+                                            {{ u.first_name }} {{ u.last_name }}
+                                        {% else %}
+                                            {{ u.username }}
+                                        {% endif %}
+                                    </span>
+                                    <span class="usuario-username">@{{ u.username }}</span>
+                                    {% if u.perfil.bio %}
+                                        <span class="usuario-bio">{{ u.perfil.bio|truncatechars:80 }}</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                            {% if user.is_authenticated and user != u %}
+                                <button class="btn btn-sm {% if u.ya_sigue %}btn-outline-primary{% else %}btn-primary{% endif %} btn-toggle-seguir"
+                                        data-user-id="{{ u.id }}"
+                                        onclick="toggleSeguirLista({{ u.id }}, this)">
+                                    <i class="fas {% if u.ya_sigue %}fa-user-check{% else %}fa-user-plus{% endif %}"></i>
+                                    <span>{% if u.ya_sigue %}Siguiendo{% else %}Seguir{% endif %}</span>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="text-center py-5">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">
+                            {% if tipo == 'seguidores' %}
+                                No tiene seguidores aún
+                            {% else %}
+                                No sigue a nadie aún
+                            {% endif %}
+                        </h5>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Función para seguir desde la lista
+function toggleSeguirLista(userId, btn) {
+    fetch(`/seguir/${userId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = '/login/';
+            return null;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data || !data.success) return;
+        
+        const icon = btn.querySelector('i');
+        const text = btn.querySelector('span');
+        
+        if (data.siguiendo) {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-outline-primary');
+            if (icon) icon.className = 'fas fa-user-check';
+            if (text) text.textContent = 'Siguiendo';
+        } else {
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-primary');
+            if (icon) icon.className = 'fas fa-user-plus';
+            if (text) text.textContent = 'Seguir';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

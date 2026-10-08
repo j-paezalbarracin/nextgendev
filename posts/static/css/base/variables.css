@@ -1,0 +1,105 @@
+/* ============================================ */
+/* VARIABLES: MODO CLARO (por defecto) */
+/* ============================================ */
+:root {
+    /* Fondos */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7f7f8;
+    --bg-sidebar: #a1a0a042;
+    
+    /* Textos */
+    --text-primary: #1a1a1a;
+    --text-secondary: #575454;
+    
+    /* Bordes */
+    --border-color: #b3b1b1;
+    
+    /* Acento */
+    --primary: #1c1c27;
+    --primary-hover: #55555e;
+    
+    /* Sombras */
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    
+    /* Radios */
+    --radius: 12px;
+    
+    /* Transiciones */
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Layout */
+    --sidebar-width: 260px;
+    --navbar-height: 70px;
+}
+/* ============================================ */
+/* VARIABLES: MODO OSCURO */
+/* ============================================ */
+[data-theme="dark"] {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #1a1a1a;
+    --bg-sidebar: #121212;
+    --text-primary: #f4f4f5;
+    --text-secondary: #c0bab8;
+    --border-color: #2a2a2a;
+    --primary: #52525b;
+    --primary-hover: #71717a;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+/* ============================================ */
+/* TIPOGRAFÍA CON COLOR DE TEMA */
+/* ============================================ */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+}
+
+p {
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+}
+
+body {
+    color: var(--text-primary);
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+a {
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--primary);
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+/* ============================================ */
+/* TRANSICIÓN SUAVE AL CAMBIAR TEMA */
+/* ============================================ */
+body,
+.sidebar,
+.sidebar-right,
+.main-content,
+.card-modern,
+.widget,
+.custom-navbar,
+.comment-item,
+#search-input,
+#search-input-mobile,
+.search-results-dropdown,
+.notif-dropdown {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+/* ============================================ */
+/* CORREGIR TEXT-PRIMARY DE BOOTSTRAP */
+/* ============================================ */
+.text-primary {
+    color: var(--primary) !important;
+}
+
+/* En modo oscuro */
+[data-theme="dark"] .text-primary {
+    color: var(--primary) !important;
+}

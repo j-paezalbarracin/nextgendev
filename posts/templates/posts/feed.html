@@ -1,0 +1,118 @@
+{% extends 'posts/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- TÍTULO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-6 fw-bold">
+                <i class="fas fa-newspaper"></i> Mi Feed
+            </h1>
+        </div>
+
+        {% if not sigue_a_alguien %}
+            <!-- FEED VACÍO: NO SIGUE A NADIE -->
+            <div class="card-modern text-center p-5 fade-in-up">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <h4>Tu feed está vacío</h4>
+                <p class="text-muted">
+                    Sigue a otros usuarios para ver sus posts aquí.
+                </p>
+                <a href="{% url 'inicio' %}" class="btn btn-primary-modern btn-modern">
+                    <i class="fas fa-compass"></i> Explorar posts
+                </a>
+            </div>
+        {% else %}
+            <!-- CONTENEDOR DE POSTS -->
+            <div id="posts-container">
+                {% for post in posts %}
+                <article class="card-modern mb-4 fade-in-up post-item" 
+                        data-post-id="{{ post.id }}">
+                    {% if post.imagen %}
+                        <img src="{{ post.imagen.url }}" class="card-img-top">
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h2 class="h3 fw-bold">
+                                <a href="{% url 'detalle_post' post.pk %}" class="text-decoration-none text-dark">
+                                    {{ post.titulo }}
+                                </a>
+                            </h2>
+                            {% if post.categoria %}
+                                <span class="badge-category">{{ post.categoria.nombre }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="text-muted small mb-3">
+                            <i class="fas fa-user"></i> 
+                            <a href="{% url 'perfil_publico' post.autor.username %}" class="text-decoration-none">
+                                {{ post.autor }}
+                            </a>
+                            <i class="fas fa-calendar-alt ms-2"></i> {{ post.fecha_publicacion|date:"d/m/Y" }}
+                        </div>
+                        
+                        <p>{{ post.contenido|truncatechars:250 }}</p>
+                        
+                        <div class="post-actions">
+                            <button class="action-btn like-btn {% if post.user_has_liked %}liked{% endif %}" 
+                                    data-post-id="{{ post.id }}"
+                                    onclick="toggleLike({{ post.id }})">
+                                <i class="{% if post.user_has_liked %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                                <span class="count" id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+                            </button>
+                            
+                            <button class="action-btn save-btn {% if post.user_has_saved %}saved{% endif %}" 
+                                    data-post-id="{{ post.id }}"
+                                    onclick="toggleGuardado({{ post.id }})">
+                                <i class="{% if post.user_has_saved %}fas{% else %}far{% endif %} fa-bookmark"></i>
+                            </button>
+                            
+                            <a href="{% url 'detalle_post' post.pk %}" class="action-btn comment-btn">
+                                <i class="far fa-comment"></i>
+                                <span class="count">{{ post.comentarios.count }}</span>
+                            </a>
+                            
+                            <a href="{% url 'detalle_post' post.pk %}" class="btn btn-primary-modern btn-modern ms-auto">
+                                Leer más <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <div class="card-modern text-center p-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h4>No hay posts en tu feed</h4>
+                    <p class="text-muted">Los usuarios que sigues no han publicado nada aún.</p>
+                    <a href="{% url 'inicio' %}" class="btn btn-primary-modern btn-modern">
+                        <i class="fas fa-compass"></i> Explorar posts
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Sentinel, spinner, etc. -->
+            <div id="scroll-sentinel" style="height: 20px;"></div>
+            
+            <div id="loading-spinner" class="text-center py-4" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="text-muted mt-2">Cargando más posts...</p>
+            </div>
+
+            <div id="no-more-posts" class="text-center py-4 text-muted" style="display: none;">
+                <i class="fa-regular fa-face-smile fa-2x mb-2"></i>
+                <p>Has llegado al final de los posts!!</p>
+            </div>
+
+            <!-- Datos para JavaScript -->
+            {% with last_post=posts|last %}
+            <input type="hidden" id="next-cursor" value="{{ last_post.id|default:'' }}">
+            <input type="hidden" id="has-next" value="{% if posts.has_next %}true{% else %}false{% endif %}">
+            <input type="hidden" id="feed-mode" value="true">
+            {% endwith %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

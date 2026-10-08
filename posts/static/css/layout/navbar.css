@@ -1,0 +1,401 @@
+/* ============================================ */
+/* NAVBAR */
+/* ============================================ */
+
+.custom-navbar {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0;
+    height: var(--navbar-height);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.custom-navbar .navbar-brand {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+.custom-navbar .navbar-brand i {
+    color: var(--primary);
+    margin-right: 3px;
+}
+
+.custom-navbar .nav-link {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.custom-navbar .nav-link:hover {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+}
+
+.custom-navbar .navbar-toggler {
+    border: none;
+    color: var(--text-primary);
+}
+
+.custom-navbar .navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* ============================================ */
+/* BOTÓN TOGGLE SIDEBAR */
+/* ============================================ */
+
+.sidebar-toggle {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.sidebar-toggle:hover {
+    background: var(--bg-secondary);
+    color: var(--primary);
+}
+
+.sidebar-toggle:focus {
+    box-shadow: none;
+}
+
+@media (min-width: 992px) {
+    .sidebar-toggle {
+        display: none !important;
+    }
+}
+
+/* ============================================ */
+/* NAVBAR RESPONSIVE */
+/* ============================================ */
+
+@media (max-width: 991.98px) {
+    .custom-navbar .container-fluid {
+        display: flex;
+        align-items: center;
+    }
+    
+    .custom-navbar .navbar-toggler {
+        order: 1;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+    }
+    
+    .custom-navbar .navbar-brand {
+        order: 2;
+        margin-left: auto !important;
+        margin-right: 12px !important;
+    }
+    
+    .custom-navbar .notif-container {
+        order: 3;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .custom-navbar .navbar-nav {
+        padding: 8px 0;
+    }
+    
+    .custom-navbar .nav-link {
+        padding: 10px 16px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .custom-navbar .navbar-brand {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================ */
+/* NOTIFICACIONES (CAMPANA) */
+/* ============================================ */
+
+.notif-container {
+    position: relative;
+}
+
+.notif-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    position: relative;
+    padding: 8px 12px;
+    border-radius: 50%;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.notif-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--primary);
+}
+
+.notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 6px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notif-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 360px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.notif-dropdown.active {
+    display: block;
+}
+
+.notif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.notif-header h6 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.notif-ver-todas {
+    font-size: 0.85rem;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.notif-ver-todas:hover {
+    text-decoration: underline;
+}
+
+.notif-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+.notif-item:hover {
+    background: var(--bg-secondary);
+}
+
+.notif-item.no-leida {
+    background: #f0f7ff;
+}
+
+.notif-item.no-leida:hover {
+    background: #e1efff;
+}
+
+.notif-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.notif-avatar-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.notif-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-content p {
+    margin: 0 0 4px 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.notif-content small {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.notif-empty {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .notif-dropdown {
+        position: fixed;
+        top: 70px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: calc(100% - 32px);
+        max-width: 400px;
+    }
+}
+
+/* ============================================ */
+/* OFFCANVAS (MENÚ MÓVIL) - MODO OSCURO */
+/* ============================================ */
+
+[data-theme="dark"] .navbar-toggler {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .navbar-toggler-icon {
+    filter: invert(1) brightness(2);
+}
+
+[data-theme="dark"] .offcanvas {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .offcanvas-header {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .offcanvas-title {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .offcanvas .btn-close {
+    filter: invert(1) brightness(2);
+    opacity: 0.8;
+}
+
+[data-theme="dark"] .offcanvas .btn-close:hover {
+    opacity: 1;
+}
+
+[data-theme="dark"] .offcanvas-body {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .offcanvas-body h6,
+[data-theme="dark"] .offcanvas-body p,
+[data-theme="dark"] .offcanvas-body span,
+[data-theme="dark"] .offcanvas-body small,
+[data-theme="dark"] .offcanvas-body a {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .offcanvas-body .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+/* ============================================ */
+/* BOTÓN FLOTANTE MODO OSCURO */
+/* ============================================ */
+
+.theme-toggle-floating {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-floating:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    background: var(--primary-hover);
+}
+
+.theme-toggle-floating:active {
+    transform: scale(0.95);
+}
+
+.theme-toggle-floating i {
+    transition: transform 0.5s ease;
+}
+
+@media (max-width: 768px) {
+    .theme-toggle-floating {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+}

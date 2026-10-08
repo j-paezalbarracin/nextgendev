@@ -1,0 +1,37 @@
+/* ============================================ */ 
+/* RESET Y BASE */
+/* ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--primary);
+}
+
+hr {
+    border-color: var(--border-color);
+    opacity: 0.6;
+    margin: 12px 0;
+}

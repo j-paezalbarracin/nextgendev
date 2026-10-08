@@ -1,0 +1,144 @@
+/* ============================================ */
+/* ACCIONES DEL POST (LIKES, GUARDAR, COMENTAR) */
+/* ============================================ */
+
+.post-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #6c757d;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: #f8f9fa;
+    color: #212529;
+}
+
+.action-btn i {
+    font-size: 1.2rem;
+}
+
+.count {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Like button */
+.like-btn {
+    color: #6c757d;
+}
+
+.like-btn.liked {
+    color: #dc3545;
+}
+
+.like-btn.liked i {
+    color: #dc3545;
+}
+
+.like-btn:hover {
+    background: #fff5f5;
+    color: #dc3545;
+}
+
+/* Comment button */
+.comment-btn {
+    color: #6c757d;
+}
+
+.comment-btn:hover {
+    background: #f0f7ff;
+    color: #0d6efd;
+}
+
+/* Save button */
+.save-btn {
+    color: #6c757d;
+}
+
+.save-btn:hover {
+    background: #fff9e6;
+    color: #f39c12;
+}
+
+.save-btn.saved {
+    color: #f39c12;
+}
+
+.save-btn.saved i {
+    color: #f39c12;
+}
+
+.btn-modern.ms-auto {
+    margin-left: auto;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Contador de comentarios */
+#contador-comentarios {
+    display: inline-block;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+#contador-comentarios.updating {
+    transform: scale(1.3);
+    color: var(--primary);
+}
+
+/* ============================================ */
+/* MODO OSCURO */
+/* ============================================ */
+
+[data-theme="dark"] .action-btn {
+    color: #a0a0a0;
+}
+
+[data-theme="dark"] .action-btn:hover {
+    background: #2a2a2a;
+    color: #e5e5e5;
+}
+
+[data-theme="dark"] .like-btn.liked {
+    color: #ff6b6b;
+}
+
+[data-theme="dark"] .like-btn.liked i {
+    color: #ff6b6b;
+}
+
+[data-theme="dark"] .like-btn:hover {
+    background: #3a2a2a;
+}
+
+[data-theme="dark"] .save-btn.saved {
+    color: #f39c12;
+}
+
+[data-theme="dark"] .save-btn:hover {
+    background: #3a3a2a;
+}
+
+[data-theme="dark"] .comment-btn:hover {
+    background: #2a3a5a;
+}

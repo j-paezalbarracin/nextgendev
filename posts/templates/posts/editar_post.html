@@ -1,0 +1,54 @@
+{% extends 'posts/base.html' %}
+
+{% block contenido %}
+<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="col-lg-10">
+        <div class="card-modern fade-in-up">
+            <div class="card-body">
+                <h2 class="fw-bold mb-4">
+                    <i class="fas fa-{% if form.instance.pk %}edit{% else %}plus-circle{% endif %}"></i>
+                    {% if form.instance.pk %}Editar{% else %}Crear{% endif %} Post
+                </h2>
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_titulo" class="form-label fw-bold">Título</label>
+                        {{ form.titulo }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_contenido" class="form-label fw-bold">Contenido</label>
+                        {{ form.contenido }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_categoria" class="form-label fw-bold">Categoría</label>
+                        {{ form.categoria }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_imagen" class="form-label fw-bold">Imagen (opcional)</label>
+                        {{ form.imagen }}
+                        {% if form.instance.imagen %}
+                            <div class="mt-2">
+                                <small class="text-muted">Imagen actual: {{ form.instance.imagen.name }}</small>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: center;">
+                        <a href="{% url 'inicio' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Actualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

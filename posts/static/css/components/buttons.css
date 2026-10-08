@@ -1,0 +1,125 @@
+/* ============================================ */
+/* BOTONES */
+/* ============================================ */
+
+.btn-primary-modern {
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border: none;
+    transition: var(--transition);
+}
+
+.btn-primary-modern:hover {
+    background: var(--primary-hover);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border: none;
+    padding: 8px 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* ============================================ */
+/* SOBRESCRIBIR VARIABLES DE BOOTSTRAP */
+/* ============================================ */
+
+.btn-primary {
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-focus-shadow-rgb: 0, 0, 0;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--primary);
+    --bs-btn-active-border-color: var(--primary);
+    --bs-btn-active-shadow: none;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--primary);
+    --bs-btn-border-color: var(--primary);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--primary);
+    --bs-btn-hover-border-color: var(--primary);
+    --bs-btn-focus-shadow-rgb: 0, 0, 0;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--primary-hover);
+    --bs-btn-active-border-color: var(--primary-hover);
+    --bs-btn-active-shadow: none;
+}
+
+/* ============================================ */
+/* FORZAR ACTIVE EN MODO CLARO */
+/* ============================================ */
+
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary:focus,
+.btn-primary:focus-visible {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+.btn-outline-primary:active,
+.btn-outline-primary.active,
+.btn-outline-primary:focus,
+.btn-outline-primary:focus-visible {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+/* ============================================ */
+/* MODO OSCURO: SOMBRA TURQUESA */
+/* ============================================ */
+
+[data-theme="dark"] .btn-primary:focus,
+[data-theme="dark"] .btn-primary:focus-visible,
+[data-theme="dark"] .btn-primary:active {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(82, 82, 91, 0.4) !important;
+}
+
+[data-theme="dark"] .btn-outline-primary:focus,
+[data-theme="dark"] .btn-outline-primary:focus-visible,
+[data-theme="dark"] .btn-outline-primary:active {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 0.25rem rgba(82, 82, 91, 0.5) !important;
+}
+
+[data-theme="dark"] .btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+[data-theme="dark"] .btn-outline-primary:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+[data-theme="dark"] .btn-outline-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}

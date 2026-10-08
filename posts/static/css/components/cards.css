@@ -1,0 +1,69 @@
+/* ============================================ */
+/* CARDS DE POSTS */
+/* ============================================ */
+
+.card-modern {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.card-modern:hover {
+    box-shadow: var(--shadow);
+}
+
+.card-modern .card-body {
+    padding: 20px 24px;
+}
+
+/* Imágenes de posts uniformes */
+.post-item .card-img-top {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+@media (max-width: 768px) {
+    .post-item .card-img-top {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .post-item .card-img-top {
+        height: 200px;
+    }
+}
+
+/* Badge de categoría */
+.badge-category {
+    background: var(--primary);
+    color: #fafafa;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.post-item .card-img-top {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+@media (max-width: 768px) {
+    .post-item .card-img-top {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .post-item .card-img-top {
+        height: 200px;
+    }
+}

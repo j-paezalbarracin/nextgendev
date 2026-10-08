@@ -1,0 +1,390 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}NextGenDev - La proxima generaicon de tech{% endblock %}</title>
+    <!-- SCRIPT DEL TEMA (ANTES del CSS para evitar flash) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', initialTheme);
+        })();
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'image/blog.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="container-fluid px-4">
+        
+        <!-- Hamburguesa (izquierda) -->
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenuMobile">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Logo -->
+        <a class="navbar-brand" href="{% url 'inicio' %}">
+            <i class="fa-solid fa-blog" aria-hidden="true"></i>NextGenDev
+        </a>
+        <!-- Campana -->
+        {% if user.is_authenticated %}
+            <div class="notif-container">
+                <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge" id="notif-badge" style="display: none;">0</span>
+                </button>
+                
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">
+                        <h6>Notificaciones</h6>
+                        <a href="{% url 'notificaciones' %}" class="notif-ver-todas">Ver todas</a>
+                    </div>
+                    <div class="notif-list" id="notif-list">
+                        <div class="notif-empty">Cargando...</div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</nav>
+
+    <!-- SIDEBAR PARA MÓVIL (OFFCANVAS) -->
+    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarMenuMobile" style="width: 280px;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Menú</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!--  Perfil -->
+            <div class="sidebar-profile text-center mb-2">
+                <div class="avatar-circle mx-auto">
+                    {% if user.perfil.avatar %}
+                        <img src="{{ user.perfil.avatar.url }}" alt="{{ user.username }}">
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                {% if user.is_authenticated %}
+                    <h6>{{ user.first_name }}</h6>
+                    <a href="{% url 'perfil_publico' user.username %}" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                        <i class="fas fa-user-edit"></i> Perfil
+                    </a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </button>
+                    </form>
+                {% else %}
+                    <h6>Invitado</h6>
+                    <a href="{% url 'login' %}" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </a>
+                {% endif %}
+            </div>
+            <!--  CTA (si no está autenticado) -->
+            {% if not user.is_authenticated %}
+                <div class="sidebar-cta mb-2">
+                    <i class="fas fa-rocket fa-2x text-primary"></i>
+                    <h6 class="mt-2">¡Únete a la comunidad!</h6>
+                    <p class="small text-muted">Comparte tus ideas y conecta con otros creadores.</p>
+                    <a href="{% url 'registro' %}" class="btn btn-primary btn-sm w-100">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </a>
+                </div>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <a href="{% url 'crear_post' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                        <i class="fas fa-plus-circle"></i> Nuevo Post
+                    </a>
+                {% endif %}
+                <!-- BUSCADOR EN EL SIDEBAR -->
+                <div class="sidebar-search mb-2">
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" 
+                                id="search-input-mobile" 
+                                class="form-control form-control-sm" 
+                                placeholder="Buscar posts..." 
+                                autocomplete="off">
+                        </div>
+                        <div id="search-results-mobile" class="search-results-dropdown"></div>
+                    </div>
+                </div>
+                    <a href="{% url 'inicio' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                        <i class="fas fa-home"></i> Todos los posts
+                    </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'feed_personalizado' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                        <i class="fas fa-newspaper"></i> Mi Feed
+                    </a>
+                {% endif %}   
+                {% if user.is_authenticated %}
+                    <a href="{% url 'mis_guardados' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                        <i class="fas fa-bookmark"></i> Mis Guardados
+                    </a>
+                {% endif %}
+                <!--  Categorías -->
+                <h6 class="small">Categorías</h6> 
+            <div class="sidebar-nav">
+                {% if user.is_staff %}
+                    <a href="{% url 'crear_categoria' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                        <i class="fas fa-plus-circle"></i> Nueva categoria
+                    </a>
+                {% endif %}   
+                <ul class="list-unstyled">
+                    {% for categoria in categorias %}
+                        <li>
+                            <a href="{% url 'verpost_categoria' categoria.pk %}">
+                                <i class="fas fa-tag"></i> {{ categoria.nombre }}
+                                <span class="badge bg-light text-dark float-end">{{ categoria.post_set.count }}</span>
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li class="text-muted small">Sin categorías</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!--  FOOTER DEL SIDEBAR (SIEMPRE AL FINAL) -->
+            <div class="sidebar-footer">
+                <div class="sidebar-social">
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://github.com/j-paezalbarracin?tab=repositories" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                </div>
+                <div class="sidebar-links">
+                    <a href="#" class="text-muted">Política de Privacidad</a>
+                    <span class="text-muted mx-1">•</span>
+                    <a href="#" class="text-muted">Términos de Uso</a>
+                </div>
+                <div class="sidebar-copy">
+                    <small class="text-muted">&copy; {% now "Y" %} NextGenDev. Todos los derechos reservados.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL + SIDEBAR ESCRITORIO -->
+    <div class="app-wrapper">
+        {% with url_name=request.resolver_match.url_name %}
+            {% if url_name != 'login' and url_name != 'registro' and url_name != 'password_reset' %}
+                <aside class="sidebar d-none d-lg-block" id="sidebarDesktop">
+                    <div class="sidebar-content">
+                        <!-- 📌 Perfil -->
+                        <div class="sidebar-profile text-center mb-3">
+                            <div class="avatar-circle mx-auto">
+                                {% if user.perfil.avatar %}
+                                    <img src="{{ user.perfil.avatar.url }}" alt="{{ user.username }}">
+                                {% else %}
+                                    <i class="fas fa-user"></i>
+                                {% endif %}
+                            </div>
+                            {% if user.is_authenticated %}
+                                <h6>{{ user.first_name }}</h6>
+                                <a href="{% url 'perfil_publico' user.username %}" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                                    <i class="fas fa-user-edit"></i> Perfil
+                                </a>
+                                <form action="{% url 'logout' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                    </button>
+                                </form>
+                            {% else %}
+                                <h6>Invitado</h6>
+                                <a href="{% url 'login' %}" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                                </a>
+                            {% endif %}
+                        </div>
+                        <!--  CTA (si no está autenticado) -->
+                        {% if not user.is_authenticated %}
+                            <div class="sidebar-cta mb-2">
+                                <i class="fas fa-rocket fa-2x text-primary"></i>
+                                <h6 class="mt-2">¡Únete a la comunidad!</h6>
+                                <p class="small text-muted">Comparte tus ideas y conecta con otros creadores.</p>
+                                <a href="{% url 'registro' %}" class="btn btn-primary btn-sm w-100">
+                                    <i class="fas fa-user-plus"></i> Registrarse
+                                </a>
+                            </div>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                                <a href="{% url 'crear_post' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                                    <i class="fas fa-plus-circle"></i> Nuevo Post
+                                </a>
+                        {% endif %}
+                        <!-- BUSCADOR EN EL SIDEBAR -->
+                        <div class="sidebar-search mb-2">
+                            <div class="search-container">
+                                <div class="search-input-wrapper">
+                                    <i class="fas fa-search search-icon"></i>
+                                    <input type="text" 
+                                        id="search-input" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Buscar por título..." 
+                                        autocomplete="off">
+                                </div>
+                                <div id="search-results" class="search-results-dropdown"></div>
+                            </div>
+                        </div>
+                        <a href="{% url 'inicio' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                            <i class="fas fa-home"></i> Todos los posts
+                        </a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'feed_personalizado' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                                <i class="fas fa-newspaper"></i> Mi Feed
+                            </a>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'mis_guardados' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                                <i class="fas fa-bookmark"></i> Mis Guardados
+                            </a>
+                        {% endif %}
+                        <h6 class="small">Categorías</h6>
+                        {% if user.is_staff %}
+                                <a href="{% url 'crear_categoria' %}" class="btn btn-primary mb-2 w-100 d-flex justify-content-between align-items-center">
+                                    <i class="fas fa-plus-circle"></i> Nueva categoria
+                                </a>
+                        {% endif %}
+
+                        <!--  Categorías -->
+                        <div class="sidebar-nav">
+                            <ul class="list-unstyled">
+                                {% for categoria in categorias %}
+                                    <li>
+                                        <a href="{% url 'verpost_categoria' categoria.pk %}">
+                                            <i class="fas fa-tag"></i> {{ categoria.nombre }}
+                                            <span class="badge bg-light text-dark float-end">{{ categoria.post_set.count }}</span>
+                                        </a>
+                                    </li>
+                                {% empty %}
+                                    <li class="text-muted small">Sin categorías</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!--  FOOTER DEL SIDEBAR (SIEMPRE AL FINAL) -->
+                        <div class="sidebar-footer">
+                            <div class="sidebar-social">
+                                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                                <a href="https://github.com/j-paezalbarracin?tab=repositories" target="_blank"><i class="fab fa-github"></i></a>
+                                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                            </div>
+                            <div class="sidebar-links">
+                                <a href="#" class="text-muted">Política de Privacidad</a>
+                                <span class="text-muted mx-1">•</span>
+                                <a href="#" class="text-muted">Términos de Uso</a>
+                            </div>
+                            <div class="sidebar-copy">
+                                <small class="text-muted">&copy; {% now "Y" %} NextGenDev. Todos los derechos reservados.</small>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                <aside class="sidebar-right d-none d-xl-block">
+                    <div class="sidebar-content">
+                        <!--  Estadísticas -->
+                        <div class="widget">
+                            <h6><i class="fa fa-bar-chart" aria-hidden="true"></i> Estadísticas</h6>
+                            <div class="stats">
+                                <div><strong>{{ total_posts }}</strong> Posts</div>
+                                <div><strong>{{ total_usuarios }}</strong> Usuarios</div>
+                                <div><strong>{{ total_comentarios }}</strong> Comentarios</div>
+                            </div>
+                        </div>
+                        <!--  Posts populares -->
+                        <div class="widget">
+                            <h6><i class="fa fa-fire" aria-hidden="true"></i>Posts populares</h6>
+                            <ul class="list-unstyled">
+                                {% for post in posts_populares %}
+                            <li>
+                                <a href="{% url 'detalle_post' post.pk %}">
+                                    <span>{{ post.titulo|truncatechars:30 }}</span>
+                                    <small>
+                                        <i class="fas fa-thumbs-up"></i> {{ post.likes.count }}
+                                    </small>
+                                </a>
+                            </li>
+                                {% empty %}
+                                    <li class="text-muted small">No hay posts aún</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- Autores destacados -->
+                        <div class="widget">
+                            <h6><i class="fa fa-star" aria-hidden="true"></i>Autores destacados</h6>
+                            <ul class="autores-list">
+                                {% for autor in autores_destacados %}
+                                    <li>
+                                        <a href="{% url 'perfil_publico' autor.username %}" class="autor-item">
+                                            <div class="autor-avatar">
+                                                {% if autor.perfil.avatar %}
+                                                    <img src="{{ autor.perfil.avatar.url }}" alt="{{ autor.username }}">
+                                                {% else %}
+                                                    <i class="fas fa-user-circle"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="autor-info">
+                                                <span class="autor-nombre">{{ autor.first_name }}</span>
+                                                <span class="autor-posts">{{ autor.num_posts }} posts</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                {% empty %}
+                                    <li class="text-muted small">No hay autores</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            {% endif %}
+        {% endwith %}
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content" id="mainContent" style="flex: 1; display: flex; flex-direction: column;">
+            <div class="container-fluid px-4 py-4 flex-grow-1 d-flex flex-column">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% block contenido %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <!-- BOTÓN FLOTANTE MODO OSCURO -->
+    <button class="theme-toggle-floating" onclick="toggleTheme()" title="Cambiar tema">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/password_error.js' %}"></script>
+    <script src="{% static 'js/time.js' %}"></script>
+    <script src="{% static 'js/ws.js' %}"></script>
+    <script src="{% static 'js/slug_categoria.js' %}"></script>
+    <script src="{% static 'js/like.js' %}"></script>
+    <script src="{% static 'js/scroll.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+    <script src="{% static 'js/guardado.js' %}"></script>
+    <script src="{% static 'js/seguir.js' %}"></script>    
+    <script src="{% static 'js/notificaciones.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
+</body>
+</html>

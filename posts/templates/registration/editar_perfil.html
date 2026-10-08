@@ -1,0 +1,99 @@
+{% extends 'posts/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-modern fade-in-up shadow-lg">
+            <div class="card-body">
+                <h2 class="fw-bold mb-4">
+                    <i class="fas fa-user-edit"></i> Editar Perfil
+                </h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Avatar -->
+                    <div class="mb-4 text-center">
+                        <div class="perfil-avatar-edit" id="avatar-container">
+                            {% if perfil.avatar %}
+                                <img src="{{ perfil.avatar.url }}" alt="{{ user.username }}" id="avatar-preview">
+                            {% else %}
+                                <i class="fas fa-user" id="avatar-preview-icon"></i>
+                            {% endif %}
+                        </div>
+                        <label for="id_avatar" class="btn btn-outline-primary btn-sm mt-2">
+                            <i class="fas fa-camera"></i> Cambiar foto
+                        </label>
+                        <input type="file" name="avatar" id="id_avatar" accept="image/*" style="display: none;">
+                    </div>
+                    <!-- Datos del User -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nombre</label>
+                            <input type="text" name="first_name" class="form-control" 
+                                value="{{ user.first_name }}" placeholder="Tu nombre">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Apellido</label>
+                            <input type="text" name="last_name" class="form-control" 
+                                value="{{ user.last_name }}" placeholder="Tu apellido">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Correo electrónico</label>
+                        <input type="email" name="email" class="form-control" 
+                            value="{{ user.email }}" placeholder="tu@email.com">
+                    </div>
+                    <!-- Datos del Perfil -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Biografía</label>
+                        <textarea name="bio" class="form-control" rows="3" 
+                                placeholder="Cuéntanos sobre ti..." maxlength="500">{{ perfil.bio }}</textarea>
+                        <small class="text-muted">Máximo 500 caracteres</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Ubicación</label>
+                            <input type="text" name="ubicacion" class="form-control" 
+                                value="{{ perfil.ubicacion }}" placeholder="Ciudad, País">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Sitio web</label>
+                            <input type="url" name="sitio_web" class="form-control" 
+                                value="{{ perfil.sitio_web }}" placeholder="https://tusitio.com">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Fecha de nacimiento</label>
+                        <input type="date" name="fecha_nacimiento" class="form-control" 
+                            value="{{ perfil.fecha_nacimiento|date:'Y-m-d' }}">
+                    </div>
+                    <!-- Botones -->
+                    <div class="d-flex gap-2" style="justify-content: center;">
+                        <a href="{% url 'perfil_publico' username=user.username %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Guardar cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Preview del avatar al seleccionar imagen
+document.getElementById('id_avatar').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const container = document.getElementById('avatar-container');
+            container.innerHTML = `<img src="${event.target.result}" id="avatar-preview" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}
