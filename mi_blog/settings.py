@@ -32,6 +32,15 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+# ============================================
+# CSRF TRUSTED ORIGINS (para producción)
+# ============================================
+
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'CSRF_TRUSTED_ORIGINS', 
+    'http://localhost:8000,http://127.0.0.1:8000'
+).split(',')
+
 
 # ============================================
 # APLICACIONES
@@ -201,3 +210,12 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',
 }
+
+
+
+# En desarrollo (opcional)
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS += [
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]
