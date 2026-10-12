@@ -29,8 +29,11 @@ COPY . /app/
 # Crear directorios para archivos estáticos y media
 RUN mkdir -p /app/staticfiles /app/media
 
+# Hacer ejecutable el script de arranque
+RUN chmod +x /app/start.sh
+
 # Exponer el puerto
 EXPOSE 8000
 
-# Comando por defecto
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "mi_blog.asgi:application"]
+# Comando por defecto: ejecutar el script de arranque
+CMD ["/app/start.sh"]
