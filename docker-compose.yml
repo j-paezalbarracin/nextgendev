@@ -1,0 +1,63 @@
+services:
+  # ============================================
+  # Base de datos PostgreSQL
+  # ============================================
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=nextgendev
+      - POSTGRES_USER=nextgendev
+      - POSTGRES_PASSWORD=nextgendev123
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nextgendev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Redis (para WebSockets)
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Django (con Daphne)
+  # ============================================
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate &&
+            python manage.py collectstatic --noinput &&
+            daphne -b 0.0.0.0 -p 8000 mi_blog.asgi:application"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+  media_volume:

@@ -21,20 +21,21 @@ load_dotenv()  # Busca .env en la raíz
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# ============================================
+# SEGURIDAD
+# ============================================
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'  # ✅ Convierte string a boolean
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
-# Application definition
+# ============================================
+# APLICACIONES
+# ============================================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -47,17 +48,9 @@ INSTALLED_APPS = [
     'posts',
 ]
 
-ASGI_APPLICATION = 'mi_blog.asgi.application'
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
-    }
-}
-
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← Después de Security
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -85,24 +78,44 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mi_blog.wsgi.application'
+ASGI_APPLICATION = 'mi_blog.asgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+# ============================================
+# BASE DE DATOS
+# ============================================
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': os.getenv('DB_NAME', 'nextgendev'),
+        'USER': os.getenv('DB_USER', 'nextgendev'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+
+# ============================================
+# CHANNELS (WebSockets)
+# ============================================
+
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [REDIS_URL],
+        },
+    },
+}
+
+
+# ============================================
+# PASSWORD VALIDATION
+# ============================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -120,46 +133,71 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
+# ============================================
+# INTERNACIONALIZACIÓN
+# ============================================
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
+# ============================================
+# ARCHIVOS ESTÁTICOS
+# ============================================
 
-# Configuración de archivos estáticos
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Para producción (opcional pero recomendado)
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Django 6.x usa STORAGES
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+
+# ============================================
+# MEDIA
+# ============================================
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# ============================================
+# AUTENTICACIÓN
+# ============================================
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'inicio'
 LOGOUT_REDIRECT_URL = 'inicio'
 
-SESSION_COOKIE_SECURE = False  # En desarrollo debe ser False
+
+# ============================================
+# SESIONES
+# ============================================
+
+SESSION_COOKIE_SECURE = False  # True en producción con HTTPS
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'Lax'  # O 'Strict'
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+
+# ============================================
+# MENSAJES
+# ============================================
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'secondary',
     messages.INFO: 'info',
     messages.SUCCESS: 'success',
     messages.WARNING: 'warning',
-    messages.ERROR: 'danger', # Changes 'error' to Bootstrap's red 'danger' class
+    messages.ERROR: 'danger',
 }
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'

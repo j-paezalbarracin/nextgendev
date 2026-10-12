@@ -42,3 +42,6 @@ dump.rdb
 
 # Node (por si acaso)
 node_modules/
+
+# Docker
+.env.docker
