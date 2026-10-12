@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(reconectarTimeout);
             reconectarTimeout = null;
         }
-        
-        const wsUrl = `ws://${window.location.host}/ws/comentarios/${postId}/`;
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/ws/comentarios/${postId}/`;
         socket = new WebSocket(wsUrl);
         
         socket.onopen = function(e) {
