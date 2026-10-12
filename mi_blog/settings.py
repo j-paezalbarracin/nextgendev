@@ -168,18 +168,18 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
-
-# Compatibilidad con dj3-cloudinary-storage
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",  # ← NUEVO
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",  # ← SIN WhiteNoise
     },
 }
+
+# WhiteNoise sirve los archivos estáticos
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
 
 # ============================================
 # MEDIA
